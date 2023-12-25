@@ -31,6 +31,7 @@
             this.ConnectButton = new System.Windows.Forms.Button();
             this.PortInput = new System.Windows.Forms.TextBox();
             this.PortLabel = new System.Windows.Forms.Label();
+            this.AddUser = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ConnectButton
@@ -59,16 +60,27 @@
             this.PortLabel.TabIndex = 2;
             this.PortLabel.Text = "Port";
             // 
+            // AddUser
+            // 
+            this.AddUser.Location = new System.Drawing.Point(84, 161);
+            this.AddUser.Name = "AddUser";
+            this.AddUser.Size = new System.Drawing.Size(91, 23);
+            this.AddUser.TabIndex = 3;
+            this.AddUser.Text = "Add Users";
+            this.AddUser.UseVisualStyleBackColor = true;
+            this.AddUser.Click += new System.EventHandler(this.AddUser_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(277, 166);
+            this.ClientSize = new System.Drawing.Size(271, 196);
+            this.Controls.Add(this.AddUser);
             this.Controls.Add(this.PortLabel);
             this.Controls.Add(this.PortInput);
             this.Controls.Add(this.ConnectButton);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Server";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -79,6 +91,7 @@
         private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.TextBox PortInput;
         private System.Windows.Forms.Label PortLabel;
+        private System.Windows.Forms.Button AddUser;
     }
 }
 

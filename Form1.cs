@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.Json;
 
 namespace FTP
 {
@@ -21,10 +22,20 @@ namespace FTP
         {
             InitializeComponent();
             sockets= new List<Socket>();
-            UserInfo info= new UserInfo();
-            info.username="Alireza";
-            info.password="1234";
-            users.Add(info.username, info);
+            users= new Dictionary<string, UserInfo>();
+            ReadDatabase();
+        }
+        private void ReadDatabase()
+        {
+            try
+            {
+                string usersData = System.IO.File.ReadAllText("E:\\CPP\\FTP\\Data\\Users.json");
+                users=JsonSerializer.Deserialize<Dictionary<string, UserInfo>>(usersData);
+            }
+            catch
+            {
+                MessageBox.Show("Error while accessing the database");
+            }
         }
 
         private void ConnectButton_Click(object sender, EventArgs e)
@@ -49,5 +60,15 @@ namespace FTP
             sockets.Add(e);
         }
 
+        private void AddUser_Click(object sender, EventArgs e)
+        {
+
+            Admin adminForm= new Admin();
+            DialogResult result =adminForm.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                users=JsonSerializer.Deserialize<Dictionary<string, UserInfo>>(adminForm.dataJson);
+            }
+        }
     }
 }
