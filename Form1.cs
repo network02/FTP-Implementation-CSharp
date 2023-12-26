@@ -18,6 +18,7 @@ namespace FTP
         Listener listener;
         List<Socket> sockets;
         Dictionary<string, UserInfo> users;
+
         public Form1()
         {
             InitializeComponent();

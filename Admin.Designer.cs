@@ -49,6 +49,7 @@
             this.Password_Input.Name = "Password_Input";
             this.Password_Input.Size = new System.Drawing.Size(242, 22);
             this.Password_Input.TabIndex = 1;
+            this.Password_Input.UseSystemPasswordChar = true;
             // 
             // label1
             // 

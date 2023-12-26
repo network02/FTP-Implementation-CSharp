@@ -12,8 +12,4 @@ namespace FTP
         public string password { get; set; }
         
     }
-    internal class UserData
-    {
-
-    }
 }

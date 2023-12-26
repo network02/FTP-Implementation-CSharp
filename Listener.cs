@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -19,6 +20,7 @@ namespace FTP
         public bool isListening { get; private set; }
         public Dictionary<string, UserInfo> userInfo { get; private set; }
         public Dictionary<string, bool> logs { get; private set; }
+        private string rootPath = "E:\\Server\\Root";
 
         public Listener(int _port, Dictionary<string, UserInfo> info)
         {
@@ -61,7 +63,7 @@ namespace FTP
             while (true)
             {
                 byte[] buffer = new byte[255];
-                int bufferSize = acp.Receive(buffer, SocketFlags.None);
+                int bufferSize = acp.Receive(buffer,0,buffer.Length, SocketFlags.None);
                 if (bufferSize<=0)
                     Thread.CurrentThread.Abort();
 
@@ -72,20 +74,34 @@ namespace FTP
                 
                 if (request.requestType=="POST")
                 {
+                    ServerResponse response = new ServerResponse();
                     switch (request.command)
                     {
                         case "Login":
-                            ServerResponse response = Login(request);
-                            string resJson=JsonSerializer.Serialize(response);
-                            buffer=Encoding.UTF8.GetBytes(resJson);
-                            acp.Send(buffer, 0, buffer.Length, SocketFlags.None);
-                            if (response.HTTP_Code==404)
+                            response = Login(request);
+                            break;
+                        case "LIST":
+                            string path=Path.Combine(rootPath, request.serverDirectory);
+                            DirectoryInfo directory=new DirectoryInfo(path);
+                            FileInfo[] files=directory.GetFiles();
+                            response.response="";
+                            for(int i = 0; i<files.Length; i++)
                             {
-                                acp.Disconnect(true);
+                                response.response+= files[i].CreationTime+" "+files[i].Name+"\n";
                             }
+                            response.HTTP_Code=200;
                             break;
                     }
+                    string resJson = JsonSerializer.Serialize(response);
+                    byte[]sendBuffer= Encoding.UTF8.GetBytes(resJson);
+                    acp.Send(sendBuffer, 0, sendBuffer.Length, SocketFlags.None);
+                    if (response.HTTP_Code!=200)
+                    {
+                        acp.Disconnect(true);
+                    }
+
                 }
+                
 
             }
         }

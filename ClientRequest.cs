@@ -12,5 +12,6 @@ namespace FTP
         public string requestHeader { get; set; }
         public UserInfo userInfo { get; set; }
         public string command { get; set; }
+        public string serverDirectory { get; set; }
     }
 }
