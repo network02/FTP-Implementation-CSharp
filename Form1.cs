@@ -50,7 +50,7 @@ namespace FTP
                 MessageBox.Show("Invalid Entry");
                 return;
             }
-            listener=new Listener(portNumber);
+            listener=new Listener(portNumber,users);
             listener.OnSocketAccepeted += new Listener.SocketAccepetedHandler(listenerSocketAccpeted);
             listener.Start();
             MessageBox.Show("Server is Listening");
@@ -58,6 +58,7 @@ namespace FTP
         private void listenerSocketAccpeted(Socket e)
         {
             sockets.Add(e);
+
         }
 
         private void AddUser_Click(object sender, EventArgs e)
