@@ -77,7 +77,7 @@ namespace FTP
                     ServerResponse response = new ServerResponse();
                     switch (request.command)
                     {
-                        case "Login":
+                        case "USER":
                             response = Login(request);
                             break;
                         case "LIST":
@@ -87,15 +87,16 @@ namespace FTP
                             response.response="";
                             for(int i = 0; i<files.Length; i++)
                             {
-                                response.response+= files[i].CreationTime+" "+files[i].Name+"\n";
+                                response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
                             }
-                            response.HTTP_Code=200;
+                            response.statusCode=200;
                             break;
                     }
+                    response.command=request.command;
                     string resJson = JsonSerializer.Serialize(response);
                     byte[]sendBuffer= Encoding.UTF8.GetBytes(resJson);
                     acp.Send(sendBuffer, 0, sendBuffer.Length, SocketFlags.None);
-                    if (response.HTTP_Code!=200)
+                    if (response.statusCode!=200)
                     {
                         acp.Disconnect(true);
                     }
@@ -114,18 +115,19 @@ namespace FTP
 
             if (loginResult && !log)
             {
-                response.HTTP_Code=200;
+                response.statusCode=200;
                 response.response="User was Logged in successfully";
+                
                 logs.Add(request.userInfo.username, true);
             }
             else if (log==true)
             {
-                response.HTTP_Code=403;
+                response.statusCode=403;
                 response.response="User is already logged in";
             }
             else
             {
-                response.HTTP_Code=404;
+                response.statusCode=404;
                 response.response="Invalid Username or Password";
             }
 

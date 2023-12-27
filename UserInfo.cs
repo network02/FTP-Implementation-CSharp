@@ -12,4 +12,5 @@ namespace FTP
         public string password { get; set; }
         
     }
+    
 }
