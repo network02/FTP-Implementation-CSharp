@@ -63,47 +63,58 @@ namespace FTP
             while (true)
             {
                 byte[] buffer = new byte[255];
-                int bufferSize = acp.Receive(buffer,0,buffer.Length, SocketFlags.None);
+                int bufferSize = acp.Receive(buffer, 0, buffer.Length, SocketFlags.None);
                 if (bufferSize<=0)
                     Thread.CurrentThread.Abort();
 
                 Array.Resize(ref buffer, bufferSize);
 
-                string clientRequest=Encoding.UTF8.GetString(buffer);
-                ClientRequest request=JsonSerializer.Deserialize<ClientRequest>(clientRequest);
-                
-                if (request.requestType=="POST")
+                string clientRequest = Encoding.UTF8.GetString(buffer);
+                ClientRequest request = JsonSerializer.Deserialize<ClientRequest>(clientRequest);
+                ServerResponse response = new ServerResponse();
+                string path;
+                switch (request.command)
                 {
-                    ServerResponse response = new ServerResponse();
-                    switch (request.command)
-                    {
-                        case "USER":
-                            response = Login(request);
-                            break;
-                        case "LIST":
-                            string path=Path.Combine(rootPath, request.serverDirectory);
-                            DirectoryInfo directory=new DirectoryInfo(path);
-                            FileInfo[] files=directory.GetFiles();
-                            response.response="";
-                            for(int i = 0; i<files.Length; i++)
-                            {
-                                response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
-                            }
-                            response.statusCode=200;
-                            break;
-                    }
-                    response.command=request.command;
-                    string resJson = JsonSerializer.Serialize(response);
-                    byte[]sendBuffer= Encoding.UTF8.GetBytes(resJson);
-                    acp.Send(sendBuffer, 0, sendBuffer.Length, SocketFlags.None);
-                    if (response.statusCode!=200)
-                    {
-                        acp.Disconnect(true);
-                    }
 
+                    case "USER":
+                        response = Login(request);
+                        SendObjectToSocket(acp, request, response);
+                        break;
+                    case "LIST":
+                        path=Path.Combine(rootPath, request.serverDirectory);
+                        DirectoryInfo directory = new DirectoryInfo(path);
+                        FileInfo[] files = directory.GetFiles();
+                        response.response="";
+                        for (int i = 0; i<files.Length; i++)
+                        {
+                            response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
+                        }
+                        response.statusCode=200;
+                        SendObjectToSocket(acp, request, response);
+                        break;
+                    case "RETR":
+                        path=Path.Combine(rootPath, request.serverDirectory);
+                        byte[]fileBuffer=File.ReadAllBytes(path);
+                        response.statusCode= 200;
+                        string[] names = request.serverDirectory.Split('\\');
+                        response.response=names[names.Length-1];
+                        SendObjectToSocket(acp, request, response);
+                        acp.Send(fileBuffer,0,fileBuffer.Length,SocketFlags.None);
+                        break;
                 }
                 
+            }
+        }
 
+        private static void SendObjectToSocket(Socket acp, ClientRequest request, ServerResponse response)
+        {
+            response.command=request.command;
+            string resJson = JsonSerializer.Serialize(response);
+            byte[] sendBuffer = Encoding.UTF8.GetBytes(resJson);
+            acp.Send(sendBuffer, 0, sendBuffer.Length, SocketFlags.None);
+            if (response.statusCode!=200)
+            {
+                acp.Disconnect(true);
             }
         }
 

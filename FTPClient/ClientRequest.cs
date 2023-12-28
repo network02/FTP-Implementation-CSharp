@@ -8,8 +8,6 @@ namespace FTPClient
 {
     internal class ClientRequest
     {
-        public string requestType { get; set; }
-        public string requestHeader { get; set; }
         public UserInfo userInfo { get; set; }
         public string command { get; set; }
         public string serverDirectory { get; set; }

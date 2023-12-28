@@ -32,8 +32,6 @@ namespace FTPClient
             }
 
             ClientRequest clientRequest= new ClientRequest();
-            clientRequest.requestHeader="Content-Type: Application/json";
-            clientRequest.requestType="POST";
             clientRequest.userInfo=new UserInfo();
             clientRequest.userInfo.username=Username_Input.Text;
             clientRequest.userInfo.password=Password_Input.Text;
