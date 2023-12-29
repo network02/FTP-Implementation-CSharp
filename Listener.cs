@@ -9,19 +9,30 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Schema;
 
 namespace FTP
 {
     internal class Listener
     {
+        #region Socket Values
         public int port { get;private set; }
         public Socket sck { get; private set; }
         public bool isListening { get; private set; }
+
+        #endregion
+        #region User Info Values
         public Dictionary<string, UserInfo> userInfo { get; private set; }
         public Dictionary<string, bool> logs { get; private set; }
+        #endregion
+        #region File Values
         private string rootPath = "E:\\Server\\Root";
-
+        private bool isGettingFile = false;
+        private string currentStreamedFileName;
+        private string currentChosenDirectory;
+        private int fileSize;
+        #endregion
         public Listener(int _port, Dictionary<string, UserInfo> info)
         {
             this.port = _port;
@@ -62,47 +73,75 @@ namespace FTP
         {
             while (true)
             {
-                byte[] buffer = new byte[255];
-                int bufferSize = acp.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-                if (bufferSize<=0)
-                    Thread.CurrentThread.Abort();
+                if (isGettingFile)
+                    ReadFile(acp);
+                else
+                    ReadObject(acp);
+            }
+        }
 
-                Array.Resize(ref buffer, bufferSize);
+        private void ReadFile(Socket acp)
+        {
+            byte[] buffer = new byte[fileSize];
+            int bufferSize = acp.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+            if (bufferSize<0)
+                Thread.CurrentThread.Abort();
+            File.WriteAllBytes(currentChosenDirectory, buffer);
+            isGettingFile=false;
+            MessageBox.Show("File Sent");
+        }
 
-                string clientRequest = Encoding.UTF8.GetString(buffer);
-                ClientRequest request = JsonSerializer.Deserialize<ClientRequest>(clientRequest);
-                ServerResponse response = new ServerResponse();
-                string path;
-                switch (request.command)
-                {
+        private void ReadObject(Socket acp)
+        {
+            byte[] buffer = new byte[255];
+            int bufferSize = acp.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+            if (bufferSize<=0)
+                Thread.CurrentThread.Abort();
 
-                    case "USER":
-                        response = Login(request);
-                        SendObjectToSocket(acp, request, response);
-                        break;
-                    case "LIST":
-                        path=Path.Combine(rootPath, request.serverDirectory);
-                        DirectoryInfo directory = new DirectoryInfo(path);
-                        FileInfo[] files = directory.GetFiles();
-                        response.response="";
-                        for (int i = 0; i<files.Length; i++)
-                        {
-                            response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
-                        }
-                        response.statusCode=200;
-                        SendObjectToSocket(acp, request, response);
-                        break;
-                    case "RETR":
-                        path=Path.Combine(rootPath, request.serverDirectory);
-                        byte[]fileBuffer=File.ReadAllBytes(path);
-                        response.statusCode= 200;
-                        string[] names = request.serverDirectory.Split('\\');
-                        response.response=names[names.Length-1];
-                        SendObjectToSocket(acp, request, response);
-                        acp.Send(fileBuffer,0,fileBuffer.Length,SocketFlags.None);
-                        break;
-                }
-                
+            Array.Resize(ref buffer, bufferSize);
+
+            string clientRequest = Encoding.UTF8.GetString(buffer);
+            ClientRequest request = JsonSerializer.Deserialize<ClientRequest>(clientRequest);
+            ServerResponse response = new ServerResponse();
+            string path;
+            switch (request.command)
+            {
+
+                case "USER":
+                    response = Login(request);
+                    SendObjectToSocket(acp, request, response);
+                    break;
+                case "LIST":
+                    path=Path.Combine(rootPath, request.serverDirectory);
+                    DirectoryInfo directory = new DirectoryInfo(path);
+                    FileInfo[] files = directory.GetFiles();
+                    response.response="";
+                    for (int i = 0; i<files.Length; i++)
+                    {
+                        response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
+                    }
+                    response.statusCode=200;
+                    SendObjectToSocket(acp, request, response);
+                    break;
+                case "RETR":
+                    path=Path.Combine(rootPath, request.serverDirectory);
+                    byte[] fileBuffer = File.ReadAllBytes(path);
+                    response.statusCode= 200;
+                    response.fileSize= fileBuffer.Length;
+                    string[] names = request.serverDirectory.Split('\\');
+                    response.response=names[names.Length-1];
+                    SendObjectToSocket(acp, request, response);
+                    acp.Send(fileBuffer, 0, fileBuffer.Length, SocketFlags.None);
+                    break;
+                case "STOR":
+                    isGettingFile= true;
+                    string[] paths = request.serverDirectory.Split('\n');
+                    currentChosenDirectory=Path.Combine(rootPath, paths[0]);
+                    string[] folders = paths[1].Split('\\');
+                    fileSize=request.fileSize;
+                    currentStreamedFileName= folders[folders.Length-1];
+                    currentChosenDirectory=Path.Combine(currentChosenDirectory, currentStreamedFileName);
+                    break;
             }
         }
 

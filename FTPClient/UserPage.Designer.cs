@@ -37,6 +37,13 @@
             this.label4 = new System.Windows.Forms.Label();
             this.SeverGetFileDir = new System.Windows.Forms.TextBox();
             this.GetFileButton = new System.Windows.Forms.Button();
+            this.Brows = new System.Windows.Forms.Button();
+            this.ServerSendFileDir = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.SendFile = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.ClientDir = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // ViewFiles
@@ -78,7 +85,7 @@
             // 
             this.Console.FormattingEnabled = true;
             this.Console.ItemHeight = 16;
-            this.Console.Location = new System.Drawing.Point(48, 264);
+            this.Console.Location = new System.Drawing.Point(48, 363);
             this.Console.Name = "Console";
             this.Console.Size = new System.Drawing.Size(383, 164);
             this.Console.TabIndex = 5;
@@ -118,11 +125,79 @@
             this.GetFileButton.UseVisualStyleBackColor = true;
             this.GetFileButton.Click += new System.EventHandler(this.GetFileButton_Click);
             // 
+            // Brows
+            // 
+            this.Brows.Location = new System.Drawing.Point(320, 261);
+            this.Brows.Name = "Brows";
+            this.Brows.Size = new System.Drawing.Size(113, 31);
+            this.Brows.TabIndex = 12;
+            this.Brows.Text = "Browse";
+            this.Brows.UseVisualStyleBackColor = true;
+            this.Brows.Click += new System.EventHandler(this.Brows_Click);
+            // 
+            // ServerSendFileDir
+            // 
+            this.ServerSendFileDir.Location = new System.Drawing.Point(48, 316);
+            this.ServerSendFileDir.Name = "ServerSendFileDir";
+            this.ServerSendFileDir.Size = new System.Drawing.Size(255, 22);
+            this.ServerSendFileDir.TabIndex = 11;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(87, 230);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(308, 16);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "------------------------------SendFiles------------------------------";
+            // 
+            // SendFile
+            // 
+            this.SendFile.Location = new System.Drawing.Point(320, 312);
+            this.SendFile.Name = "SendFile";
+            this.SendFile.Size = new System.Drawing.Size(113, 31);
+            this.SendFile.TabIndex = 13;
+            this.SendFile.Text = "Send";
+            this.SendFile.UseVisualStyleBackColor = true;
+            this.SendFile.Click += new System.EventHandler(this.SendFile_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(45, 297);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(101, 16);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "ServerDirectory";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(45, 246);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(34, 16);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Path";
+            // 
+            // ClientDir
+            // 
+            this.ClientDir.Location = new System.Drawing.Point(48, 265);
+            this.ClientDir.Name = "ClientDir";
+            this.ClientDir.Size = new System.Drawing.Size(255, 22);
+            this.ClientDir.TabIndex = 15;
+            // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(482, 453);
+            this.ClientSize = new System.Drawing.Size(482, 522);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.ClientDir);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.SendFile);
+            this.Controls.Add(this.Brows);
+            this.Controls.Add(this.ServerSendFileDir);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.GetFileButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.SeverGetFileDir);
@@ -149,5 +224,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox SeverGetFileDir;
         private System.Windows.Forms.Button GetFileButton;
+        private System.Windows.Forms.Button Brows;
+        private System.Windows.Forms.TextBox ServerSendFileDir;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button SendFile;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox ClientDir;
     }
 }

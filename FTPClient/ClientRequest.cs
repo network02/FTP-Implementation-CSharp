@@ -11,6 +11,7 @@ namespace FTPClient
         public UserInfo userInfo { get; set; }
         public string command { get; set; }
         public string serverDirectory { get; set; }
+        public int fileSize { get; set; }
         
     }
     

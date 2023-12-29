@@ -14,6 +14,8 @@ namespace FTPClient
         private string downPath = "E:\\Client";
         private bool isGettingFile = false;
         private string currentStreamedFile;
+        private string localFileDirectory;
+        private int currentFileSize;
         private MemoryStream fs=new MemoryStream();
         public UserPage(Socket _sck)
         {
@@ -40,46 +42,53 @@ namespace FTPClient
             {
                 if (isGettingFile)
                 {
-                    byte[] fileBuffer= new byte[1024*5000];
-                    int bytesRead = 0;
-                    bytesRead=sck.Receive(fileBuffer,0,fileBuffer.Length,SocketFlags.None);
-                    if (bytesRead<=0)
-                        Thread.CurrentThread.Abort();
-
-                    string filePath = Path.Combine(downPath, currentStreamedFile);
-                    File.WriteAllBytes(filePath, fileBuffer);
-                    isGettingFile=false;
+                    ReadFile();
                 }
                 else
                 {
-                    byte[] buffer = new byte[1024*5000];
-                    int bufferSize = sck.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-                    if (bufferSize<=0)
-                        break;
-                    Array.Resize(ref buffer, bufferSize);
-                    string downText = Encoding.UTF8.GetString(buffer);
-                    ServerResponse response = JsonSerializer.Deserialize<ServerResponse>(downText);
-                    switch (response.command)
-                    {
-                        case "LIST":
-                            Invoke((MethodInvoker)delegate
-                            {
-                                string[] infos = response.response.Split('\n');
-                                Console.Items.Clear();
-                                foreach (var info in infos)
-                                    Console.Items.Add(info);
-                            });
-                            break;
-                        case "RETR":
-                            isGettingFile= true;
-                            currentStreamedFile= response.response;
-                            break;
-                    }
+                    ReadObject();
                 }
+            }
+        }
 
-                
+        private void ReadFile()
+        {
+            byte[] fileBuffer = new byte[currentFileSize];
+            int bytesRead = 0;
+            bytesRead=sck.Receive(fileBuffer, 0, fileBuffer.Length, SocketFlags.None);
+            if (bytesRead<=0)
+                Thread.CurrentThread.Abort();
+            string filePath = Path.Combine(downPath, currentStreamedFile);
+            File.WriteAllBytes(filePath, fileBuffer);
+            isGettingFile=false;
+            MessageBox.Show("File Received");
+        }
 
-                
+        private void ReadObject()
+        {
+            byte[] buffer = new byte[1024];
+            int bufferSize = sck.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+            if (bufferSize<=0)
+                Thread.CurrentThread.Abort();
+            Array.Resize(ref buffer, bufferSize);
+            string downText = Encoding.UTF8.GetString(buffer);
+            ServerResponse response = JsonSerializer.Deserialize<ServerResponse>(downText);
+            switch (response.command)
+            {
+                case "LIST":
+                    Invoke((MethodInvoker)delegate
+                    {
+                        string[] infos = response.response.Split('\n');
+                        Console.Items.Clear();
+                        foreach (var info in infos)
+                            Console.Items.Add(info);
+                    });
+                    break;
+                case "RETR":
+                    isGettingFile= true;
+                    currentStreamedFile= response.response;
+                    currentFileSize= response.fileSize;
+                    break;
             }
         }
 
@@ -91,6 +100,40 @@ namespace FTPClient
             string postText=JsonSerializer.Serialize(request);
             byte[]buffer=Encoding.UTF8.GetBytes(postText);
             sck.Send(buffer,0,buffer.Length, SocketFlags.None);
+        }
+
+        private void Brows_Click(object sender, EventArgs e)
+        {
+            var browseForm=new System.Windows.Forms.OpenFileDialog();
+
+            this.Enabled=false;
+
+            DialogResult result=browseForm.ShowDialog();
+
+            if(result==DialogResult.OK)
+            {
+                localFileDirectory= browseForm.FileName;
+                ClientDir.Text=localFileDirectory;
+                this.Enabled=true;
+            }
+            else if (result==DialogResult.Cancel)
+            {
+                this.Enabled=true;
+            }
+            
+        }
+
+        private void SendFile_Click(object sender, EventArgs e)
+        {
+            ClientRequest request=new ClientRequest();
+            byte[] fileBuffer = File.ReadAllBytes(localFileDirectory);
+            request.command="STOR";
+            request.serverDirectory= ServerSendFileDir.Text +'\n'+localFileDirectory;
+            request.fileSize= fileBuffer.Length;
+            string postText=JsonSerializer.Serialize(request);
+            byte[]buffer= Encoding.UTF8.GetBytes(postText);
+            sck.Send(buffer,0,buffer.Length, SocketFlags.None);
+            sck.Send(fileBuffer,0,fileBuffer.Length, SocketFlags.None);
         }
     }
 }
