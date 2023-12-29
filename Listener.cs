@@ -158,6 +158,27 @@ namespace FTP
                     currentStreamedFileName= folders[folders.Length-1];
                     currentChosenDirectory=Path.Combine(currentChosenDirectory, currentStreamedFileName);
                     break;
+                case "DELETE":
+                    string chosenPath = Path.Combine(rootPath, request.serverDirectory);
+                    try
+                    {
+                        Directory.Delete(chosenPath, true);
+                        response.response="Directory Deleted";
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        response.statusCode=400;
+                        response.response="This file or directory doesn't exist";
+                    }
+                    catch (System.IO.IOException)
+                    {
+                        File.Delete(chosenPath);
+                        response.response="File Deleted";
+                    }
+                    
+                    SendObjectToSocket(acp,request,response);
+
+                    break;
             }
         }
 
@@ -167,7 +188,7 @@ namespace FTP
             string resJson = JsonSerializer.Serialize(response);
             byte[] sendBuffer = Encoding.UTF8.GetBytes(resJson);
             acp.Send(sendBuffer, 0, sendBuffer.Length, SocketFlags.None);
-            if (response.statusCode!=200)
+            if (response.statusCode!=200 && response.command=="USER")
             {
                 acp.Disconnect(true);
             }

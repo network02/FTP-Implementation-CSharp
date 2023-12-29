@@ -44,6 +44,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ServerDirectory = new System.Windows.Forms.TextBox();
             this.ViewFiles = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Console
@@ -178,7 +179,7 @@
             // 
             // ViewFiles
             // 
-            this.ViewFiles.Location = new System.Drawing.Point(323, 303);
+            this.ViewFiles.Location = new System.Drawing.Point(320, 286);
             this.ViewFiles.Name = "ViewFiles";
             this.ViewFiles.Size = new System.Drawing.Size(113, 31);
             this.ViewFiles.TabIndex = 17;
@@ -186,11 +187,22 @@
             this.ViewFiles.UseVisualStyleBackColor = true;
             this.ViewFiles.Click += new System.EventHandler(this.ViewFiles_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(320, 326);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(113, 31);
+            this.button1.TabIndex = 21;
+            this.button1.Text = "Delete File";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(482, 522);
+            this.ClientSize = new System.Drawing.Size(453, 552);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ServerDirectory);
@@ -231,5 +243,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox ServerDirectory;
         private System.Windows.Forms.Button ViewFiles;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -80,6 +80,9 @@ namespace FTPClient
                     currentStreamedFile= response.response;
                     currentFileSize= response.fileSize;
                     break;
+                case "DELETE":
+                    MessageBox.Show(response.response);
+                    break;
             }
         }
 
@@ -135,6 +138,25 @@ namespace FTPClient
             string postText = JsonSerializer.Serialize(request);
             byte[] buffer = Encoding.UTF8.GetBytes(postText);
             sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DialogResult result= MessageBox.Show("Are you Sure?", "Confirm", MessageBoxButtons.YesNo);
+            this.Enabled= false;
+            if(result == DialogResult.Yes)
+            {
+                ClientRequest request = new ClientRequest();
+                request.command="DELETE";
+                request.serverDirectory= ServerDirectory.Text;
+                string postText = JsonSerializer.Serialize(request);
+                byte[] buffer = Encoding.UTF8.GetBytes(postText);
+                sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
+                this.Enabled=true;
+            }
+            else
+                this.Enabled=true;
+            
         }
     }
 }
