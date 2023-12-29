@@ -28,10 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ViewFiles = new System.Windows.Forms.Button();
-            this.ServerDirectory = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.Console = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -44,42 +40,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.ClientDir = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ServerDirectory = new System.Windows.Forms.TextBox();
+            this.ViewFiles = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // ViewFiles
-            // 
-            this.ViewFiles.Location = new System.Drawing.Point(318, 82);
-            this.ViewFiles.Name = "ViewFiles";
-            this.ViewFiles.Size = new System.Drawing.Size(113, 31);
-            this.ViewFiles.TabIndex = 1;
-            this.ViewFiles.Text = "View Files";
-            this.ViewFiles.UseVisualStyleBackColor = true;
-            this.ViewFiles.Click += new System.EventHandler(this.ViewFiles_Click);
-            // 
-            // ServerDirectory
-            // 
-            this.ServerDirectory.Location = new System.Drawing.Point(48, 84);
-            this.ServerDirectory.Name = "ServerDirectory";
-            this.ServerDirectory.Size = new System.Drawing.Size(255, 22);
-            this.ServerDirectory.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(45, 65);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 16);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "ServerDirectory";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(83, 40);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(305, 16);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "------------------------------ViewFiles------------------------------";
             // 
             // Console
             // 
@@ -93,7 +58,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(91, 136);
+            this.label3.Location = new System.Drawing.Point(93, 172);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(297, 16);
             this.label3.TabIndex = 6;
@@ -102,7 +67,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(45, 157);
+            this.label4.Location = new System.Drawing.Point(47, 193);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(101, 16);
             this.label4.TabIndex = 8;
@@ -110,14 +75,14 @@
             // 
             // SeverGetFileDir
             // 
-            this.SeverGetFileDir.Location = new System.Drawing.Point(48, 176);
+            this.SeverGetFileDir.Location = new System.Drawing.Point(50, 212);
             this.SeverGetFileDir.Name = "SeverGetFileDir";
             this.SeverGetFileDir.Size = new System.Drawing.Size(255, 22);
             this.SeverGetFileDir.TabIndex = 7;
             // 
             // GetFileButton
             // 
-            this.GetFileButton.Location = new System.Drawing.Point(318, 167);
+            this.GetFileButton.Location = new System.Drawing.Point(320, 203);
             this.GetFileButton.Name = "GetFileButton";
             this.GetFileButton.Size = new System.Drawing.Size(113, 31);
             this.GetFileButton.TabIndex = 9;
@@ -127,7 +92,7 @@
             // 
             // Brows
             // 
-            this.Brows.Location = new System.Drawing.Point(320, 261);
+            this.Brows.Location = new System.Drawing.Point(326, 79);
             this.Brows.Name = "Brows";
             this.Brows.Size = new System.Drawing.Size(113, 31);
             this.Brows.TabIndex = 12;
@@ -137,7 +102,7 @@
             // 
             // ServerSendFileDir
             // 
-            this.ServerSendFileDir.Location = new System.Drawing.Point(48, 316);
+            this.ServerSendFileDir.Location = new System.Drawing.Point(54, 134);
             this.ServerSendFileDir.Name = "ServerSendFileDir";
             this.ServerSendFileDir.Size = new System.Drawing.Size(255, 22);
             this.ServerSendFileDir.TabIndex = 11;
@@ -145,7 +110,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(87, 230);
+            this.label5.Location = new System.Drawing.Point(93, 48);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(308, 16);
             this.label5.TabIndex = 10;
@@ -153,7 +118,7 @@
             // 
             // SendFile
             // 
-            this.SendFile.Location = new System.Drawing.Point(320, 312);
+            this.SendFile.Location = new System.Drawing.Point(326, 130);
             this.SendFile.Name = "SendFile";
             this.SendFile.Size = new System.Drawing.Size(113, 31);
             this.SendFile.TabIndex = 13;
@@ -164,7 +129,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(45, 297);
+            this.label6.Location = new System.Drawing.Point(51, 115);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(101, 16);
             this.label6.TabIndex = 14;
@@ -173,7 +138,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(45, 246);
+            this.label7.Location = new System.Drawing.Point(51, 64);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(34, 16);
             this.label7.TabIndex = 16;
@@ -181,16 +146,55 @@
             // 
             // ClientDir
             // 
-            this.ClientDir.Location = new System.Drawing.Point(48, 265);
+            this.ClientDir.Location = new System.Drawing.Point(54, 83);
             this.ClientDir.Name = "ClientDir";
             this.ClientDir.Size = new System.Drawing.Size(255, 22);
             this.ClientDir.TabIndex = 15;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(88, 261);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(305, 16);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "------------------------------ViewFiles------------------------------";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(50, 286);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(101, 16);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "ServerDirectory";
+            // 
+            // ServerDirectory
+            // 
+            this.ServerDirectory.Location = new System.Drawing.Point(53, 305);
+            this.ServerDirectory.Name = "ServerDirectory";
+            this.ServerDirectory.Size = new System.Drawing.Size(255, 22);
+            this.ServerDirectory.TabIndex = 18;
+            // 
+            // ViewFiles
+            // 
+            this.ViewFiles.Location = new System.Drawing.Point(323, 303);
+            this.ViewFiles.Name = "ViewFiles";
+            this.ViewFiles.Size = new System.Drawing.Size(113, 31);
+            this.ViewFiles.TabIndex = 17;
+            this.ViewFiles.Text = "View Files";
+            this.ViewFiles.UseVisualStyleBackColor = true;
+            this.ViewFiles.Click += new System.EventHandler(this.ViewFiles_Click);
             // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 522);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ServerDirectory);
+            this.Controls.Add(this.ViewFiles);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.ClientDir);
             this.Controls.Add(this.label6);
@@ -203,10 +207,6 @@
             this.Controls.Add(this.SeverGetFileDir);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.Console);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.ServerDirectory);
-            this.Controls.Add(this.ViewFiles);
             this.Name = "UserPage";
             this.Text = "UserPage";
             this.ResumeLayout(false);
@@ -215,10 +215,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button ViewFiles;
-        private System.Windows.Forms.TextBox ServerDirectory;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ListBox Console;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -231,5 +227,9 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox ClientDir;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox ServerDirectory;
+        private System.Windows.Forms.Button ViewFiles;
     }
 }

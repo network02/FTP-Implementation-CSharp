@@ -27,15 +27,6 @@ namespace FTPClient
             }).Start();
         }
 
-        private void ViewFiles_Click(object sender, EventArgs e)
-        {
-            ClientRequest request = new ClientRequest();
-            request.command="LIST";
-            request.serverDirectory=ServerDirectory.Text;
-            string postText = JsonSerializer.Serialize(request);
-            byte[] buffer = Encoding.UTF8.GetBytes(postText);
-            sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
-        }
         private void Read()
         {
             while (true)
@@ -134,6 +125,16 @@ namespace FTPClient
             byte[]buffer= Encoding.UTF8.GetBytes(postText);
             sck.Send(buffer,0,buffer.Length, SocketFlags.None);
             sck.Send(fileBuffer,0,fileBuffer.Length, SocketFlags.None);
+        }
+
+        private void ViewFiles_Click(object sender, EventArgs e)
+        {
+            ClientRequest request = new ClientRequest();
+            request.command="LIST";
+            request.serverDirectory=ServerDirectory.Text;
+            string postText = JsonSerializer.Serialize(request);
+            byte[] buffer = Encoding.UTF8.GetBytes(postText);
+            sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
         }
     }
 }

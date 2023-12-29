@@ -113,13 +113,29 @@ namespace FTP
                     break;
                 case "LIST":
                     path=Path.Combine(rootPath, request.serverDirectory);
-                    DirectoryInfo directory = new DirectoryInfo(path);
-                    FileInfo[] files = directory.GetFiles();
                     response.response="";
-                    for (int i = 0; i<files.Length; i++)
+                    try
                     {
-                        response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
+                        DirectoryInfo directory = new DirectoryInfo(path);
+                        FileInfo[] files = directory.GetFiles();
+                        DirectoryInfo[] directories=directory.GetDirectories();
+                        
+                        for (int i = 0; i<directories.Length; i++)
+                        {
+                            response.response+= directories[i].CreationTime+" | "+ directories[i].Name+"\n";
+                        }
+                        for (int i = 0; i<files.Length; i++)
+                        {
+                            response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
+                        }
+                        
                     }
+                    catch(System.IO.IOException)
+                    {
+                        var fileInfo=new FileInfo(path);
+                        response.response+="Name: "+fileInfo.Name+"\nSize: "+fileInfo.Length+"\nCreation Time: "+fileInfo.CreationTime+"\n";
+                    }
+                    
                     response.statusCode=200;
                     SendObjectToSocket(acp, request, response);
                     break;
