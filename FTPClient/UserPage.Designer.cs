@@ -45,13 +45,14 @@
             this.ServerDirectory = new System.Windows.Forms.TextBox();
             this.ViewFiles = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.NewDir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Console
             // 
             this.Console.FormattingEnabled = true;
             this.Console.ItemHeight = 16;
-            this.Console.Location = new System.Drawing.Point(48, 363);
+            this.Console.Location = new System.Drawing.Point(48, 414);
             this.Console.Name = "Console";
             this.Console.Size = new System.Drawing.Size(383, 164);
             this.Console.TabIndex = 5;
@@ -83,7 +84,7 @@
             // 
             // GetFileButton
             // 
-            this.GetFileButton.Location = new System.Drawing.Point(320, 203);
+            this.GetFileButton.Location = new System.Drawing.Point(320, 207);
             this.GetFileButton.Name = "GetFileButton";
             this.GetFileButton.Size = new System.Drawing.Size(113, 31);
             this.GetFileButton.TabIndex = 9;
@@ -119,7 +120,7 @@
             // 
             // SendFile
             // 
-            this.SendFile.Location = new System.Drawing.Point(326, 130);
+            this.SendFile.Location = new System.Drawing.Point(326, 131);
             this.SendFile.Name = "SendFile";
             this.SendFile.Size = new System.Drawing.Size(113, 31);
             this.SendFile.TabIndex = 13;
@@ -155,11 +156,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(88, 261);
+            this.label2.Location = new System.Drawing.Point(105, 257);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(305, 16);
+            this.label2.Size = new System.Drawing.Size(276, 16);
             this.label2.TabIndex = 20;
-            this.label2.Text = "------------------------------ViewFiles------------------------------";
+            this.label2.Text = "------------------------------Files------------------------------";
             // 
             // label1
             // 
@@ -172,7 +173,7 @@
             // 
             // ServerDirectory
             // 
-            this.ServerDirectory.Location = new System.Drawing.Point(53, 305);
+            this.ServerDirectory.Location = new System.Drawing.Point(50, 330);
             this.ServerDirectory.Name = "ServerDirectory";
             this.ServerDirectory.Size = new System.Drawing.Size(255, 22);
             this.ServerDirectory.TabIndex = 18;
@@ -183,7 +184,7 @@
             this.ViewFiles.Name = "ViewFiles";
             this.ViewFiles.Size = new System.Drawing.Size(113, 31);
             this.ViewFiles.TabIndex = 17;
-            this.ViewFiles.Text = "View Files";
+            this.ViewFiles.Text = "View";
             this.ViewFiles.UseVisualStyleBackColor = true;
             this.ViewFiles.Click += new System.EventHandler(this.ViewFiles_Click);
             // 
@@ -193,15 +194,26 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(113, 31);
             this.button1.TabIndex = 21;
-            this.button1.Text = "Delete File";
+            this.button1.Text = "Delete";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // NewDir
+            // 
+            this.NewDir.Location = new System.Drawing.Point(320, 366);
+            this.NewDir.Name = "NewDir";
+            this.NewDir.Size = new System.Drawing.Size(113, 31);
+            this.NewDir.TabIndex = 22;
+            this.NewDir.Text = "New";
+            this.NewDir.UseVisualStyleBackColor = true;
+            this.NewDir.Click += new System.EventHandler(this.NewDir_Click);
             // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(453, 552);
+            this.ClientSize = new System.Drawing.Size(474, 661);
+            this.Controls.Add(this.NewDir);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -244,5 +256,6 @@
         private System.Windows.Forms.TextBox ServerDirectory;
         private System.Windows.Forms.Button ViewFiles;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button NewDir;
     }
 }

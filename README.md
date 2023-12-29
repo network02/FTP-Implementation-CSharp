@@ -9,6 +9,7 @@ This is an implementation of File Transfer Protocol using .Net sockets.
 - RETR
 - STOR
 - DELE
+- MKD
 - RMD
 
 ## Tech

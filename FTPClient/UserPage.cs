@@ -67,20 +67,28 @@ namespace FTPClient
             switch (response.command)
             {
                 case "LIST":
+
                     Invoke((MethodInvoker)delegate
                     {
-                        string[] infos = response.response.Split('\n');
-                        Console.Items.Clear();
-                        foreach (var info in infos)
-                            Console.Items.Add(info);
+                        if (response.statusCode==200)
+                        {
+                            string[] infos = response.response.Split('\n');
+                            Console.Items.Clear();
+                            foreach (var info in infos)
+                                Console.Items.Add(info);
+                        }
+                        else
+                            MessageBox.Show(response.response);
+                        
                     });
+
                     break;
                 case "RETR":
                     isGettingFile= true;
                     currentStreamedFile= response.response;
                     currentFileSize= response.fileSize;
                     break;
-                case "DELETE":
+                default:
                     MessageBox.Show(response.response);
                     break;
             }
@@ -91,9 +99,7 @@ namespace FTPClient
             ClientRequest request = new ClientRequest();
             request.command="RETR";
             request.serverDirectory=SeverGetFileDir.Text;
-            string postText=JsonSerializer.Serialize(request);
-            byte[]buffer=Encoding.UTF8.GetBytes(postText);
-            sck.Send(buffer,0,buffer.Length, SocketFlags.None);
+            SendObjectInSocket(request);
         }
 
         private void Brows_Click(object sender, EventArgs e)
@@ -124,9 +130,7 @@ namespace FTPClient
             request.command="STOR";
             request.serverDirectory= ServerSendFileDir.Text +'\n'+localFileDirectory;
             request.fileSize= fileBuffer.Length;
-            string postText=JsonSerializer.Serialize(request);
-            byte[]buffer= Encoding.UTF8.GetBytes(postText);
-            sck.Send(buffer,0,buffer.Length, SocketFlags.None);
+            SendObjectInSocket(request);
             sck.Send(fileBuffer,0,fileBuffer.Length, SocketFlags.None);
         }
 
@@ -135,9 +139,7 @@ namespace FTPClient
             ClientRequest request = new ClientRequest();
             request.command="LIST";
             request.serverDirectory=ServerDirectory.Text;
-            string postText = JsonSerializer.Serialize(request);
-            byte[] buffer = Encoding.UTF8.GetBytes(postText);
-            sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
+            SendObjectInSocket(request);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -149,14 +151,27 @@ namespace FTPClient
                 ClientRequest request = new ClientRequest();
                 request.command="DELETE";
                 request.serverDirectory= ServerDirectory.Text;
-                string postText = JsonSerializer.Serialize(request);
-                byte[] buffer = Encoding.UTF8.GetBytes(postText);
-                sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
+                SendObjectInSocket(request);
                 this.Enabled=true;
             }
             else
                 this.Enabled=true;
             
+        }
+
+        private void NewDir_Click(object sender, EventArgs e)
+        {
+            ClientRequest request = new ClientRequest();
+            request.command="MKD";
+            request.serverDirectory= ServerDirectory.Text;
+            SendObjectInSocket(request);
+        }
+
+        private void SendObjectInSocket(ClientRequest request)
+        {
+            string postText = JsonSerializer.Serialize(request);
+            byte[] buffer = Encoding.UTF8.GetBytes(postText);
+            sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
         }
     }
 }

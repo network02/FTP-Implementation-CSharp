@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Schema;
 
 namespace FTP
 {
@@ -116,6 +112,7 @@ namespace FTP
                     response.response="";
                     try
                     {
+                        response.statusCode=200;
                         DirectoryInfo directory = new DirectoryInfo(path);
                         FileInfo[] files = directory.GetFiles();
                         DirectoryInfo[] directories=directory.GetDirectories();
@@ -130,13 +127,17 @@ namespace FTP
                         }
                         
                     }
+                    catch (DirectoryNotFoundException)
+                    {
+                        response.statusCode=400;
+                        response.response="This directory Doesn't exist";
+                    }
                     catch(System.IO.IOException)
                     {
+                        response.statusCode=200;
                         var fileInfo=new FileInfo(path);
                         response.response+="Name: "+fileInfo.Name+"\nSize: "+fileInfo.Length+"\nCreation Time: "+fileInfo.CreationTime+"\n";
                     }
-                    
-                    response.statusCode=200;
                     SendObjectToSocket(acp, request, response);
                     break;
                 case "RETR":
@@ -175,7 +176,29 @@ namespace FTP
                         File.Delete(chosenPath);
                         response.response="File Deleted";
                     }
-                    
+                    SendObjectToSocket(acp,request,response);
+                    break;
+                case "MKD":
+                    string pth=Path.Combine(rootPath,request.serverDirectory);
+                    try
+                    {
+                        if(Directory.Exists(pth))
+                        {
+                            response.response="This Directory already exists";
+                            response.statusCode=400;
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory(pth);
+                            response.response="Directory Created";
+                            response.statusCode= 200;
+                        }
+                    }
+                    catch
+                    {
+                        response.statusCode=400;
+                        response.response="Invalid Directory Configuration";
+                    }
                     SendObjectToSocket(acp,request,response);
 
                     break;
