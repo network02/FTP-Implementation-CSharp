@@ -46,6 +46,8 @@
             this.ViewFiles = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.NewDir = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.GetCurrentDirectory = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Console
@@ -165,7 +167,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(50, 286);
+            this.label1.Location = new System.Drawing.Point(74, 301);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 16);
             this.label1.TabIndex = 19;
@@ -184,7 +186,7 @@
             this.ViewFiles.Name = "ViewFiles";
             this.ViewFiles.Size = new System.Drawing.Size(113, 31);
             this.ViewFiles.TabIndex = 17;
-            this.ViewFiles.Text = "View";
+            this.ViewFiles.Text = "Open";
             this.ViewFiles.UseVisualStyleBackColor = true;
             this.ViewFiles.Click += new System.EventHandler(this.ViewFiles_Click);
             // 
@@ -200,19 +202,41 @@
             // 
             // NewDir
             // 
-            this.NewDir.Location = new System.Drawing.Point(320, 366);
+            this.NewDir.Location = new System.Drawing.Point(320, 365);
             this.NewDir.Name = "NewDir";
             this.NewDir.Size = new System.Drawing.Size(113, 31);
             this.NewDir.TabIndex = 22;
-            this.NewDir.Text = "New";
+            this.NewDir.Text = "New Folder";
             this.NewDir.UseVisualStyleBackColor = true;
             this.NewDir.Click += new System.EventHandler(this.NewDir_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(48, 294);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(19, 31);
+            this.button2.TabIndex = 23;
+            this.button2.Text = "<";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // GetCurrentDirectory
+            // 
+            this.GetCurrentDirectory.Location = new System.Drawing.Point(50, 365);
+            this.GetCurrentDirectory.Name = "GetCurrentDirectory";
+            this.GetCurrentDirectory.Size = new System.Drawing.Size(255, 30);
+            this.GetCurrentDirectory.TabIndex = 24;
+            this.GetCurrentDirectory.Text = "Get Current Directory";
+            this.GetCurrentDirectory.UseVisualStyleBackColor = true;
+            this.GetCurrentDirectory.Click += new System.EventHandler(this.GetCurrentDirectory_Click);
             // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(474, 661);
+            this.Controls.Add(this.GetCurrentDirectory);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.NewDir);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
@@ -257,5 +281,7 @@
         private System.Windows.Forms.Button ViewFiles;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button NewDir;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button GetCurrentDirectory;
     }
 }

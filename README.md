@@ -11,6 +11,7 @@ This is an implementation of File Transfer Protocol using .Net sockets.
 - DELE
 - MKD
 - RMD
+- CDUP
 
 ## Tech
 

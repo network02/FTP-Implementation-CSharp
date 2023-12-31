@@ -29,6 +29,10 @@ namespace FTP
         private string currentChosenDirectory;
         private int fileSize;
         #endregion
+
+        #region Server Values
+        private static ThreadLocal<string> currentServerDirectory= new ThreadLocal<string>();
+        #endregion
         public Listener(int _port, Dictionary<string, UserInfo> info)
         {
             this.port = _port;
@@ -54,6 +58,7 @@ namespace FTP
             Socket e=this.sck.EndAccept(ar);
             new Thread(() =>
             {
+                currentServerDirectory.Value=rootPath;
                 ReadData(e);
             }).Start();
             if (OnSocketAccepeted!=null)
@@ -84,7 +89,13 @@ namespace FTP
                 Thread.CurrentThread.Abort();
             File.WriteAllBytes(currentChosenDirectory, buffer);
             isGettingFile=false;
-            MessageBox.Show("File Sent");
+            ServerResponse response=new ServerResponse();
+            response.response="File Sent";
+            response.statusCode=200;
+            response.command="STOR";
+            string resJSON=JsonSerializer.Serialize(response);
+            byte[] bufffer=Encoding.UTF8.GetBytes(resJSON);
+            acp.Send(bufffer,0,bufffer.Length,SocketFlags.None);
         }
 
         private void ReadObject(Socket acp)
@@ -102,13 +113,12 @@ namespace FTP
             string path;
             switch (request.command)
             {
-
                 case "USER":
                     response = Login(request);
                     SendObjectToSocket(acp, request, response);
                     break;
                 case "LIST":
-                    path=Path.Combine(rootPath, request.serverDirectory);
+                    path=Path.Combine(currentServerDirectory.Value, request.serverDirectory);
                     response.response="";
                     try
                     {
@@ -124,8 +134,8 @@ namespace FTP
                         for (int i = 0; i<files.Length; i++)
                         {
                             response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
-                        }
-                        
+                        }       
+                        currentServerDirectory.Value=path;
                     }
                     catch (DirectoryNotFoundException)
                     {
@@ -141,26 +151,52 @@ namespace FTP
                     SendObjectToSocket(acp, request, response);
                     break;
                 case "RETR":
-                    path=Path.Combine(rootPath, request.serverDirectory);
-                    byte[] fileBuffer = File.ReadAllBytes(path);
-                    response.statusCode= 200;
-                    response.fileSize= fileBuffer.Length;
-                    string[] names = request.serverDirectory.Split('\\');
-                    response.response=names[names.Length-1];
-                    SendObjectToSocket(acp, request, response);
-                    acp.Send(fileBuffer, 0, fileBuffer.Length, SocketFlags.None);
+                    try
+                    {
+                        path=Path.Combine(currentServerDirectory.Value, request.serverDirectory);
+                        byte[] fileBuffer = File.ReadAllBytes(path);
+                        response.statusCode= 200;
+                        response.fileSize= fileBuffer.Length;
+                        string[] names = request.serverDirectory.Split('\\');
+                        response.response=names[names.Length-1];
+                        SendObjectToSocket(acp, request, response);
+                        acp.Send(fileBuffer, 0, fileBuffer.Length, SocketFlags.None);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        response.statusCode=404;
+                        response.response="Invalid Directory";
+                        SendObjectToSocket(acp, request, response);
+                    }
+                    catch
+                    {
+                        response.statusCode=400;
+                        response.response="Unknown Error";
+                        SendObjectToSocket(acp, request, response);
+                    }
                     break;
                 case "STOR":
-                    isGettingFile= true;
-                    string[] paths = request.serverDirectory.Split('\n');
-                    currentChosenDirectory=Path.Combine(rootPath, paths[0]);
-                    string[] folders = paths[1].Split('\\');
-                    fileSize=request.fileSize;
-                    currentStreamedFileName= folders[folders.Length-1];
-                    currentChosenDirectory=Path.Combine(currentChosenDirectory, currentStreamedFileName);
+                    try
+                    {
+                        isGettingFile= true;
+                        string[] paths = request.serverDirectory.Split('\n');
+                        currentChosenDirectory=Path.Combine(currentServerDirectory.Value, paths[0]);
+                        string[] folders = paths[1].Split('\\');
+                        fileSize=request.fileSize;
+                        currentStreamedFileName= folders[folders.Length-1];
+                        currentChosenDirectory=Path.Combine(currentChosenDirectory, currentStreamedFileName);
+                    }
+                    catch
+                    {
+                        isGettingFile= false;
+                        response.statusCode=404;
+                        response.response="Invalid Path";
+                        SendObjectToSocket (acp, request, response);
+                    }
                     break;
                 case "DELETE":
-                    string chosenPath = Path.Combine(rootPath, request.serverDirectory);
+
+                    string chosenPath = Path.Combine(currentServerDirectory.Value, request.serverDirectory);
                     try
                     {
                         Directory.Delete(chosenPath, true);
@@ -200,7 +236,36 @@ namespace FTP
                         response.response="Invalid Directory Configuration";
                     }
                     SendObjectToSocket(acp,request,response);
+                    break;
+                case "PWD":
+                    response.statusCode=200;
+                    response.response=currentServerDirectory.Value;
+                    SendObjectToSocket(acp,request,response);
+                    break;
+                case "CDUP":
+                    if (currentServerDirectory.Value==rootPath)
+                    {
+                        response.statusCode=128;
+                        response.response="You can't move past root directory";
+                    }
+                    else
+                    {
+                        response.statusCode= 200;
+                        DirectoryInfo directory=Directory.GetParent(currentServerDirectory.Value);
+                        FileInfo[] files = directory.GetFiles();
+                        DirectoryInfo[] directories = directory.GetDirectories();
+                        currentServerDirectory.Value=directory.FullName;
+                        for (int i = 0; i<directories.Length; i++)
+                        {
+                            response.response+= directories[i].CreationTime+" | "+ directories[i].Name+"\n";
+                        }
+                        for (int i = 0; i<files.Length; i++)
+                        {
+                            response.response+= files[i].CreationTime+" | "+files[i].Name+"\n";
+                        }
 
+                    }
+                    SendObjectToSocket(acp,request,response);
                     break;
             }
         }

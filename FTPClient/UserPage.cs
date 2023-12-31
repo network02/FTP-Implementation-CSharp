@@ -16,11 +16,14 @@ namespace FTPClient
         private string currentStreamedFile;
         private string localFileDirectory;
         private int currentFileSize;
-        private MemoryStream fs=new MemoryStream();
         public UserPage(Socket _sck)
         {
             InitializeComponent();
             this.sck = _sck;
+            ClientRequest request = new ClientRequest();
+            request.command="LIST";
+            request.serverDirectory=ServerDirectory.Text;
+            SendObjectInSocket(request);
             new Thread(() =>
             {
                 Read();
@@ -67,31 +70,54 @@ namespace FTPClient
             switch (response.command)
             {
                 case "LIST":
-
                     Invoke((MethodInvoker)delegate
                     {
-                        if (response.statusCode==200)
-                        {
-                            string[] infos = response.response.Split('\n');
-                            Console.Items.Clear();
-                            foreach (var info in infos)
-                                Console.Items.Add(info);
-                        }
-                        else
-                            MessageBox.Show(response.response);
-                        
-                    });
+                        SetConsole(response);
 
+                    });
+                    break;
+                case "CDUP":
+                    Invoke((MethodInvoker)delegate
+                    {
+                        SetConsole(response);
+                    });
                     break;
                 case "RETR":
-                    isGettingFile= true;
-                    currentStreamedFile= response.response;
-                    currentFileSize= response.fileSize;
+                    if (response.statusCode==200)
+                    {
+                        isGettingFile= true;
+                        currentStreamedFile= response.response;
+                        currentFileSize= response.fileSize;
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.response);
+                    }
+                        break;
+                case "PWD":
+                    Invoke((MethodInvoker)delegate
+                    {
+                        Console.Items.Clear();
+                        Console.Items.Add(response.response);
+                    });
                     break;
                 default:
                     MessageBox.Show(response.response);
                     break;
             }
+        }
+
+        private void SetConsole(ServerResponse response)
+        {
+            if (response.statusCode==200)
+            {
+                string[] infos = response.response.Split('\n');
+                Console.Items.Clear();
+                foreach (var info in infos)
+                    Console.Items.Add(info);
+            }
+            else
+                MessageBox.Show(response.response);
         }
 
         private void GetFileButton_Click(object sender, EventArgs e)
@@ -172,6 +198,20 @@ namespace FTPClient
             string postText = JsonSerializer.Serialize(request);
             byte[] buffer = Encoding.UTF8.GetBytes(postText);
             sck.Send(buffer, 0, buffer.Length, SocketFlags.None);
+        }
+
+        private void GetCurrentDirectory_Click(object sender, EventArgs e)
+        {
+            ClientRequest request = new ClientRequest();
+            request.command="PWD";
+            SendObjectInSocket(request);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ClientRequest request= new ClientRequest();
+            request.command="CDUP";
+            SendObjectInSocket(request);
         }
     }
 }
