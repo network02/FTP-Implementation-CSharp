@@ -34,6 +34,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.AddUser = new System.Windows.Forms.Button();
+            this.AdminAccess = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Username_Input
@@ -81,7 +82,7 @@
             // AddUser
             // 
             this.AddUser.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.AddUser.Location = new System.Drawing.Point(80, 186);
+            this.AddUser.Location = new System.Drawing.Point(81, 215);
             this.AddUser.Name = "AddUser";
             this.AddUser.Size = new System.Drawing.Size(171, 43);
             this.AddUser.TabIndex = 5;
@@ -89,11 +90,22 @@
             this.AddUser.UseVisualStyleBackColor = true;
             this.AddUser.Click += new System.EventHandler(this.AddUser_Click);
             // 
+            // AdminAccess
+            // 
+            this.AdminAccess.AutoSize = true;
+            this.AdminAccess.Location = new System.Drawing.Point(106, 180);
+            this.AdminAccess.Name = "AdminAccess";
+            this.AdminAccess.Size = new System.Drawing.Size(115, 20);
+            this.AdminAccess.TabIndex = 6;
+            this.AdminAccess.Text = "Admin Access";
+            this.AdminAccess.UseVisualStyleBackColor = true;
+            // 
             // Admin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(322, 257);
+            this.ClientSize = new System.Drawing.Size(322, 280);
+            this.Controls.Add(this.AdminAccess);
             this.Controls.Add(this.AddUser);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -115,5 +127,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button AddUser;
+        private System.Windows.Forms.CheckBox AdminAccess;
     }
 }

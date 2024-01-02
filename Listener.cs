@@ -32,6 +32,7 @@ namespace FTP
 
         #region Server Values
         private static ThreadLocal<string> currentServerDirectory= new ThreadLocal<string>();
+        private static ThreadLocal<UserInfo> currentUser= new ThreadLocal<UserInfo>();
         #endregion
         public Listener(int _port, Dictionary<string, UserInfo> info)
         {
@@ -176,6 +177,13 @@ namespace FTP
                     }
                     break;
                 case "STOR":
+                    if (!currentUser.Value.adminAccess)
+                    {
+                        response.statusCode=100;
+                        response.response="This user doesn't have the right access";
+                        SendObjectToSocket(acp, request, response);
+                        break;
+                    }
                     try
                     {
                         isGettingFile= true;
@@ -193,9 +201,16 @@ namespace FTP
                         response.response="Invalid Path";
                         SendObjectToSocket (acp, request, response);
                     }
+
                     break;
                 case "DELETE":
-
+                    if(!currentUser.Value.adminAccess) 
+                    {
+                        response.statusCode=100;
+                        response.response="This user doesn't have the right access";
+                        SendObjectToSocket(acp, request, response);
+                        break;
+                    }
                     string chosenPath = Path.Combine(currentServerDirectory.Value, request.serverDirectory);
                     try
                     {
@@ -215,6 +230,14 @@ namespace FTP
                     SendObjectToSocket(acp,request,response);
                     break;
                 case "MKD":
+                    if (!currentUser.Value.adminAccess)
+                    {
+                        response.statusCode=100;
+                        response.response="This user doesn't have the right access";
+                        SendObjectToSocket(acp, request, response);
+                        break;
+                    }
+
                     string pth=Path.Combine(rootPath,request.serverDirectory);
                     try
                     {
@@ -285,42 +308,39 @@ namespace FTP
         private ServerResponse Login(ClientRequest request)
         {
             ServerResponse response = new ServerResponse();
-            bool loginResult = CheckLogin(request.userInfo);
-            logs.TryGetValue(request.userInfo.username, out bool log);
-
-            if (loginResult && !log)
-            {
-                response.statusCode=200;
-                response.response="User was Logged in successfully";
-                
-                logs.Add(request.userInfo.username, true);
-            }
-            else if (log==true)
-            {
-                response.statusCode=403;
-                response.response="User is already logged in";
-            }
-            else
+            UserInfo info = CheckLogin(request.userInfo);
+            if (info==null || info.password!= request.userInfo.password)
             {
                 response.statusCode=404;
                 response.response="Invalid Username or Password";
             }
+            else
+            {
+                logs.TryGetValue(request.userInfo.username, out bool log); 
+                if (!log)
+                {
+                    response.statusCode=200;
+                    response.response="User was Logged in successfully";
+                    logs.Add(request.userInfo.username, true);
+                    currentUser.Value=info;
+                }
+                else if (log==true)
+                {
+                    response.statusCode=403;
+                    response.response="User is already logged in";
+                }
+
+            }
+
 
             return response;
         }
 
-        private bool CheckLogin(UserInfo _info)
+        private UserInfo CheckLogin(UserInfo _info)
         {
             userInfo.TryGetValue(_info.username, out UserInfo value);
             
-            if(value==null)
-                return false;
-
-            if (value.password==_info.password)
-                return true;
-            
-
-            return false;
+            return value;
         }
 
         

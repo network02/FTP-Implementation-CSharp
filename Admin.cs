@@ -42,14 +42,13 @@ namespace FTP
             UserInfo newUser = new UserInfo();
             newUser.username=Username_Input.Text;
             newUser.password=Password_Input.Text;
+            newUser.adminAccess=AdminAccess.Checked;
             this.users.Add(newUser.username, newUser);
             string usersData = JsonSerializer.Serialize(this.users);
             System.IO.File.WriteAllText("E:\\CPP\\FTP\\Data\\Users.json", usersData);
             this.dataJson = usersData;
             MessageBox.Show("New user addded");
             this.Close();
-            Form1 form= new Form1();
-            form.Show();
         }
     }
 }
