@@ -171,21 +171,19 @@ namespace FTP
                     {
                         response.statusCode=404;
                         response.response="Invalid Directory";
-                        SendObjectToSocket(acp, request, response);
                     }
                     catch
                     {
                         response.statusCode=400;
                         response.response="Unknown Error";
-                        SendObjectToSocket(acp, request, response);
                     }
+                    SendObjectToSocket(acp, request, response);
                     break;
                 case "STOR":
                     if (!currentUser.Value.adminAccess)
                     {
                         response.statusCode=100;
                         response.response="This user doesn't have the right access";
-                        SendObjectToSocket(acp, request, response);
                         break;
                     }
                     try
@@ -200,14 +198,16 @@ namespace FTP
                         fileSize=request.fileSize;
                         currentStreamedFileName= folders[folders.Length-1];
                         currentChosenDirectory=Path.Combine(currentChosenDirectory, currentStreamedFileName);
+                        response.statusCode= 200;
+                        response.response="Server is Ready";
                     }
                     catch
                     {
                         isGettingFile= false;
                         response.statusCode=404;
                         response.response="Invalid Path";
-                        SendObjectToSocket (acp, request, response);
                     }
+                    SendObjectToSocket (acp, request, response);
 
                     break;
                 case "DELETE":
