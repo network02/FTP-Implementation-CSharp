@@ -290,6 +290,11 @@ namespace FTP
                     }
                     SendObjectToSocket(acp,request,response);
                     break;
+                case "QUIT":
+                    acp.Close();
+                    acp.Dispose();
+                    Thread.CurrentThread.Abort();
+                    break;
             }
         }
 

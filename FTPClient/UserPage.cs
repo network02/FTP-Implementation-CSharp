@@ -13,6 +13,7 @@ namespace FTPClient
         private Socket sck;
         private string downPath = "E:\\Client";
         private bool isGettingFile = false;
+        private bool isSendingFile = false;
         private string currentStreamedFile;
         private string localFileDirectory;
         private int currentFileSize;
@@ -101,6 +102,27 @@ namespace FTPClient
                         Console.Items.Add(response.response);
                     });
                     break;
+                case "STOR":
+                    if (response.statusCode==200)
+                    {
+                        if (isSendingFile)
+                        {
+                            MessageBox.Show(response.response);
+                            isSendingFile= false;
+                        }
+                        else
+                        {
+                            byte[] fileBuffer = File.ReadAllBytes(localFileDirectory);
+                            sck.Send(fileBuffer, 0, fileBuffer.Length, SocketFlags.None);
+                            isSendingFile=true;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.response);
+                        isSendingFile= false;
+                    }
+                    break;
                 default:
                     MessageBox.Show(response.response);
                     break;
@@ -157,7 +179,6 @@ namespace FTPClient
             request.serverDirectory= ServerSendFileDir.Text +'\n'+localFileDirectory;
             request.fileSize= fileBuffer.Length;
             SendObjectInSocket(request);
-            sck.Send(fileBuffer,0,fileBuffer.Length, SocketFlags.None);
         }
 
         private void ViewFiles_Click(object sender, EventArgs e)
@@ -212,6 +233,21 @@ namespace FTPClient
             ClientRequest request= new ClientRequest();
             request.command="CDUP";
             SendObjectInSocket(request);
+        }
+
+        private void Quit()
+        {
+            while(!isSendingFile && !isGettingFile)
+            {
+                ClientRequest request=new ClientRequest();
+                request.command="QUIT";
+                SendObjectInSocket(request);
+            }
+        }
+
+        private void QuitButton_Click(object sender, EventArgs e)
+        {
+            new Thread(Quit).Start();
         }
     }
 }

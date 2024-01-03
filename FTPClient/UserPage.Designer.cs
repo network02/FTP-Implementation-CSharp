@@ -48,6 +48,7 @@
             this.NewDir = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.GetCurrentDirectory = new System.Windows.Forms.Button();
+            this.QuitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Console
@@ -230,11 +231,22 @@
             this.GetCurrentDirectory.UseVisualStyleBackColor = true;
             this.GetCurrentDirectory.Click += new System.EventHandler(this.GetCurrentDirectory_Click);
             // 
+            // QuitButton
+            // 
+            this.QuitButton.Location = new System.Drawing.Point(12, 618);
+            this.QuitButton.Name = "QuitButton";
+            this.QuitButton.Size = new System.Drawing.Size(113, 31);
+            this.QuitButton.TabIndex = 25;
+            this.QuitButton.Text = "Quit";
+            this.QuitButton.UseVisualStyleBackColor = true;
+            this.QuitButton.Click += new System.EventHandler(this.QuitButton_Click);
+            // 
             // UserPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(474, 661);
+            this.Controls.Add(this.QuitButton);
             this.Controls.Add(this.GetCurrentDirectory);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.NewDir);
@@ -283,5 +295,6 @@
         private System.Windows.Forms.Button NewDir;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button GetCurrentDirectory;
+        private System.Windows.Forms.Button QuitButton;
     }
 }
