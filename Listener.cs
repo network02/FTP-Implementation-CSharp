@@ -120,6 +120,8 @@ namespace FTP
                     break;
                 case "LIST":
                     path=Path.Combine(currentServerDirectory.Value, request.serverDirectory);
+                    if(!Directory.Exists(path))
+                        path= Path.Combine(rootPath, request.serverDirectory);
                     response.response="";
                     try
                     {
@@ -152,9 +154,11 @@ namespace FTP
                     SendObjectToSocket(acp, request, response);
                     break;
                 case "RETR":
+                    path=Path.Combine(currentServerDirectory.Value, request.serverDirectory);
+                    if (!Directory.Exists(path))
+                        path= Path.Combine(rootPath, request.serverDirectory);
                     try
                     {
-                        path=Path.Combine(currentServerDirectory.Value, request.serverDirectory);
                         byte[] fileBuffer = File.ReadAllBytes(path);
                         response.statusCode= 200;
                         response.fileSize= fileBuffer.Length;
@@ -189,6 +193,9 @@ namespace FTP
                         isGettingFile= true;
                         string[] paths = request.serverDirectory.Split('\n');
                         currentChosenDirectory=Path.Combine(currentServerDirectory.Value, paths[0]);
+                        if(!Directory.Exists(currentChosenDirectory))
+                            currentChosenDirectory=Path.Combine(rootPath, paths[0]);
+
                         string[] folders = paths[1].Split('\\');
                         fileSize=request.fileSize;
                         currentStreamedFileName= folders[folders.Length-1];
@@ -212,6 +219,8 @@ namespace FTP
                         break;
                     }
                     string chosenPath = Path.Combine(currentServerDirectory.Value, request.serverDirectory);
+                    if(!Directory.Exists(chosenPath)) 
+                        chosenPath=Path.Combine(rootPath,request.serverDirectory);
                     try
                     {
                         Directory.Delete(chosenPath, true);
@@ -237,8 +246,9 @@ namespace FTP
                         SendObjectToSocket(acp, request, response);
                         break;
                     }
-
-                    string pth=Path.Combine(rootPath,request.serverDirectory);
+                    string pth=Path.Combine(currentServerDirectory.Value,request.serverDirectory);
+                    if(!Directory.GetParent(pth).Exists)
+                        pth=Path.Combine (rootPath,request.serverDirectory);
                     try
                     {
                         if(Directory.Exists(pth))
